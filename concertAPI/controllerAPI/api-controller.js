@@ -19,7 +19,7 @@ router.get("/", (req, res)=>{
 })
 
 router.get("/:id", (req, res)=>{
-	connection.query("select * from FUNDRAISER where ConcertID=" + req.params.id, (err, records,fields)=> {
+	connection.query("select * from FUNDRAISER where FUNDRAISER_ID=" + req.params.id, (err, records,fields)=> {
 		 if (err){
 			 console.error("Error while retrieve the data");
 		 }else{
