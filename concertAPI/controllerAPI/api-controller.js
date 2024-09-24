@@ -8,7 +8,7 @@ var express = require('express');
 
 var router = express.Router();
 
-router.get("/", (req, res) => {
+router.get("/FUNDRAISER", (req, res) => {
 	connection.query(`SELECT f.*, c.NAME as category_name 
     FROM FUNDRAISER f
     JOIN CATEGORY c ON f.CATEGORY_ID = c.CATEGORY_ID
@@ -21,8 +21,8 @@ router.get("/", (req, res) => {
 	})
 })
 
-router.get("/:id", (req, res) => {
-	connection.query("select * from FUNDRAISER where FUNDRAISER_ID=" + req.params.id, (err, records, fields) => {
+router.get("/CATEGORY", (req, res) => {
+	connection.query( "select * from CATEGORY", (err, records, fields) => {
 		if (err) {
 			console.error("Error while retrieve the data");
 		} else {
@@ -30,6 +30,16 @@ router.get("/:id", (req, res) => {
 		}
 	})
 })
+
+// router.get("/:id", (req, res) => {
+// 	connection.query("select * from FUNDRAISER where FUNDRAISER_ID=" + req.params.id, (err, records, fields) => {
+// 		if (err) {
+// 			console.error("Error while retrieve the data");
+// 		} else {
+// 			res.send(records);
+// 		}
+// 	})
+// })
 
 
 
