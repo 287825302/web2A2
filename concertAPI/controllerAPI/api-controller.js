@@ -59,6 +59,25 @@ router.get('/search', (req, res) => {
 	});
 });
 
+router.get('/FUNDRAISER/:id', (req, res) => {
+	const fundraiserId = req.params.id;
+
+	const query = `
+	  SELECT f.*, c.NAME as category_name 
+	  FROM FUNDRAISER f
+	  JOIN CATEGORY c ON f.CATEGORY_ID = c.CATEGORY_ID
+	  WHERE f.FUNDRAISER_ID = ?
+	`;
+
+	connection.query(query, [fundraiserId], (err, records) => {
+		if (err) {
+			console.error("Error while retrieving the data:");
+
+		}
+		res.json(records);
+	});
+});
+
 
 // router.get("/:id", (req, res) => {
 // 	connection.query("select * from FUNDRAISER where FUNDRAISER_ID=" + req.params.id, (err, records, fields) => {
