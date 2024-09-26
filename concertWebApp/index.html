@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Charity Champions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            flex: 1;
+            background-color: #e0e0ff; /* 浅蓝色背景 */
+            opacity: 0.7; /* 提高不透明度 */
+        }
+        .content {
+            flex: 2;
+            max-width: 800px;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        header {
+            background-color: #4a90e2;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        nav {
+            margin: 20px 0;
+        }
+        nav a {
+            color: #4a90e2;
+            text-decoration: none;
+            margin-right: 15px;
+        }
+        .fundraiser {
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="sidebar"></div>
+        <div class="content">
+            <header>
+                <h1>Charity Champions</h1>
+            </header>
+
+            <nav>
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <a href="#fundraisers">Fundraisers</a>
+                <a href="#contact">Contact</a>
+            </nav>
+
+            <section id="about">
+                <h2>About Us</h2>
+                <p>We connect passionate individuals with meaningful causes, enabling people to create and support fundraisers that make a real difference in communities worldwide.</p>
+            </section>
+
+            <section id="fundraisers">
+                <h2>Active Fundraisers</h2>
+                <div id="fundraisers-list"></div>
+            </section>
+
+            <section id="contact">
+                <h2>Contact Us</h2>
+                <p>Email: info@charitychampions.org | Phone: (555) 123-4567</p>
+            </section>
+        </div>
+        <div class="sidebar"></div>
+    </div>
+
+    <script>
+        fetch("http://localhost:3060/api/crowdfunding/FUNDRAISER")
+            .then(response => response.json())
+            .then(data => {
+                const list = document.getElementById('fundraisers-list');
+                data.forEach(f => {
+                    list.innerHTML += `
+                        <div class="fundraiser">
+                            <h3>${f.CAPTION}</h3>
+                            <p>Organiser: ${f.ORGANISER || 'Not specified'} | City: ${f.CITY}</p>
+                            <p>Category: ${f.category_name}</p>
+                            <p>Target: ${f.TARGET_FUNDING} AUD | Raised: ${f.CURRENT_FUNDING} AUD</p>
+                        </div>
+                    `;
+                });
+            })
+            .catch(error => {
+                console.error("Error fetching data:", error);
+                document.getElementById('fundraisers-list').innerHTML = "Failed to load fundraisers. Please try again later.";
+            });
+    </script>
+</body>
+</html>
