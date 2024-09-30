@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fundraiser Details - Charity Champions</title>
+    <style>
+        /* Global styles */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        
+        /* Layout styles */
+        .wrapper {
+            display: flex;
+            min-height: 100vh; /* Ensure the wrapper takes up at least the full viewport height */
+        }
+        .sidebar {
+            flex: 1;
+            background-color: #e0e0ff;
+            opacity: 0.7; /* Semi-transparent sidebar */
+        }
+        .content {
+            flex: 2;
+            max-width: 800px;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+        }
+        
+        /* Header styles */
+        header {
+            background-color: #4a90e2;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        /* Navigation styles */
+        nav {
+            margin: 20px 0;
+        }
+        nav a {
+            color: #4a90e2;
+            text-decoration: none;
+            margin-right: 15px;
+        }
+        
+        /* Fundraiser details styles */
+        .fundraiser-details {
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        /* Donate button styles */
+        .donate-button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Left sidebar -->
+        <div class="sidebar"></div>
+        
+        <!-- Main content area -->
+        <div class="content">
+            <!-- Header section -->
+            <header>
+                <h1>Charity Champions</h1>
+            </header>
+
+            <!-- Navigation menu -->
+            <nav>
+                <a href="/">Home</a>
+                <a href="/search">Search</a>
+                <a href="/fundraisers">Fundraisers</a>
+            </nav>
+
+            <!-- Fundraiser details section -->
+            <section id="fundraiser-details">
+                <h2>Fundraiser Details</h2>
+                <div id="fundraiser-content" class="fundraiser-details">
+                    <!-- Fundraiser details will be populated here dynamically -->
+                </div>
+                <button class="donate-button" onclick="showDonateDialog()">Donate</button>
+            </section>
+
+            <!-- Contact information section -->
+            <section id="contact">
+                <h2>Contact Us</h2>
+                <p>Email: info@charitychampions.org | Phone: (555) 123-4567</p>
+            </section>
+        </div>
+        
+        <!-- Right sidebar -->
+        <div class="sidebar"></div>
+    </div>
+
+    <script>
+        // Event listener for when the DOM content is fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get the fundraiser ID from the URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const fundraiserId = urlParams.get('id');
+
+            // If a fundraiser ID is provided, fetch its details; otherwise, display a message
+            if (fundraiserId) {
+                fetchFundraiserDetails(fundraiserId);
+            } else {
+                document.getElementById('fundraiser-content').innerHTML = '<p>No fundraiser selected.</p>';
+            }
+        });
+
+        // Function to fetch fundraiser details from the API
+        function fetchFundraiserDetails(id) {
+            fetch(`http://localhost:3060/api/crowdfunding/FUNDRAISER/${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    // If data is returned, display the first fundraiser's details
+                    if (data.length > 0) {
+                        displayFundraiserDetails(data[0]);
+                    } else {
+                        document.getElementById('fundraiser-content').innerHTML = '<p>Fundraiser not found.</p>';
+                    }
+                })
+                .catch(error => {
+                    // Handle any errors that occur during the fetch
+                    console.error('Error fetching fundraiser details:', error);
+                    document.getElementById('fundraiser-content').innerHTML = '<p>Error loading fundraiser details. Please try again.</p>';
+                });
+        }
+
+        // Function to display the fundraiser details in the HTML
+        function displayFundraiserDetails(fundraiser) {
+            const content = document.getElementById('fundraiser-content');
+            content.innerHTML = `
+                <h3>${fundraiser.CAPTION}</h3>
+                <p><strong>Organizer:</strong> ${fundraiser.ORGANIZER || 'Not specified'}</p>
+                <p><strong>City:</strong> ${fundraiser.CITY}</p>
+                <p><strong>Category:</strong> ${fundraiser.category_name}</p>
+                <p><strong>Target Funding:</strong> ${fundraiser.TARGET_FUNDING} AUD</p>
+                <p><strong>Current Funding:</strong> ${fundraiser.CURRENT_FUNDING} AUD</p>
+                <p><strong>Description:</strong> ${fundraiser.DESCRIPTION || 'No description available.'}</p>
+            `;
+        }
+
+        // Function to show a donation dialog (currently just shows an alert)
+        function showDonateDialog() {
+            alert("This feature is under construction");
+        }
+    </script>
+</body>
+</html>

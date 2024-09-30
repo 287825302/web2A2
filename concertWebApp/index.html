@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <!-- Ensures proper rendering and touch zooming for all devices -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Charity Champions</title>
     <style>
+        /* Global styles */
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
@@ -13,15 +15,18 @@
             padding: 0;
             background-color: #f0f0f0;
         }
+        /* Wrapper for the entire page content */
         .wrapper {
             display: flex;
             min-height: 100vh;
         }
+        /* Sidebar styles */
         .sidebar {
             flex: 1;
-            background-color: #e0e0ff; /* 浅蓝色背景 */
-            opacity: 0.7; /* 提高不透明度 */
+            background-color: #e0e0ff;
+            opacity: 0.7;
         }
+        /* Main content area styles */
         .content {
             flex: 2;
             max-width: 800px;
@@ -29,12 +34,14 @@
             padding: 20px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
+        /* Header styles */
         header {
             background-color: #4a90e2;
             color: white;
             padding: 20px;
             text-align: center;
         }
+        /* Navigation styles */
         nav {
             margin: 20px 0;
         }
@@ -43,6 +50,7 @@
             text-decoration: none;
             margin-right: 15px;
         }
+        /* Individual fundraiser card styles */
         .fundraiser {
             background-color: #f4f4f4;
             border: 1px solid #ddd;
@@ -50,58 +58,86 @@
             margin-bottom: 15px;
             border-radius: 5px;
         }
+        /* Grid layout for fundraisers list */
+        #fundraisers-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        /* Ensure fundraiser images are responsive */
+        .fundraiser img {
+            max-width: 100%;
+            height: auto;
+        }
     </style>
 </head>
 <body>
+    <!-- Main wrapper -->
     <div class="wrapper">
+        <!-- Left sidebar -->
         <div class="sidebar"></div>
+        <!-- Main content area -->
         <div class="content">
+            <!-- Page header -->
             <header>
                 <h1>Charity Champions</h1>
             </header>
 
+            <!-- Navigation menu -->
             <nav>
-                <a href="#home">Home</a>
-                <a href="#about">About</a>
-                <a href="#fundraisers">Fundraisers</a>
-                <a href="#contact">Contact</a>
+                <a href="/">Home</a>
+                <a href="/search">Search</a>
+                <a href="/fundraisers">Fundraisers</a>
             </nav>
 
+            <!-- About section -->
             <section id="about">
                 <h2>About Us</h2>
                 <p>We connect passionate individuals with meaningful causes, enabling people to create and support fundraisers that make a real difference in communities worldwide.</p>
             </section>
 
+            <!-- Fundraisers section -->
             <section id="fundraisers">
                 <h2>Active Fundraisers</h2>
+                <!-- Container for dynamically loaded fundraiser cards -->
                 <div id="fundraisers-list"></div>
             </section>
 
+            <!-- Contact section -->
             <section id="contact">
                 <h2>Contact Us</h2>
                 <p>Email: info@charitychampions.org | Phone: (555) 123-4567</p>
             </section>
         </div>
+        <!-- Right sidebar -->
         <div class="sidebar"></div>
     </div>
 
     <script>
+        // Fetch fundraiser data from the API
         fetch("http://localhost:3060/api/crowdfunding/FUNDRAISER")
             .then(response => response.json())
             .then(data => {
+                // Get the container for fundraiser cards
                 const list = document.getElementById('fundraisers-list');
+                // Iterate through each fundraiser in the data
                 data.forEach(f => {
+                    // Create HTML for each fundraiser card
                     list.innerHTML += `
                         <div class="fundraiser">
+                            <img src="image/${f.FUNDRAISER_ID}.png" alt="${f.CAPTION}">
                             <h3>${f.CAPTION}</h3>
-                            <p>Organiser: ${f.ORGANISER || 'Not specified'} | City: ${f.CITY}</p>
+                            <p>Organiser: ${f.ORGANIZER || 'Not specified'}</p>
+                            <p>City: ${f.CITY}</p>
                             <p>Category: ${f.category_name}</p>
-                            <p>Target: ${f.TARGET_FUNDING} AUD | Raised: ${f.CURRENT_FUNDING} AUD</p>
+                            <p>Target: ${f.TARGET_FUNDING} AUD</p>
+                            <p>Raised: ${f.CURRENT_FUNDING} AUD</p>
                         </div>
                     `;
                 });
             })
             .catch(error => {
+                // Handle any errors that occur during the fetch
                 console.error("Error fetching data:", error);
                 document.getElementById('fundraisers-list').innerHTML = "Failed to load fundraisers. Please try again later.";
             });
